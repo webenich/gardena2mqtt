@@ -1,0 +1,10 @@
+services:
+  gardena2mqtt:
+    image: domochip/gardena2mqtt:latest
+    container_name: gardena2mqtt
+    network_mode: host
+    env_file:
+      - /home/pi/gardena2mqtt/.env
+    volumes:
+      - ../gardena2mqtt.py:/app/gardena2mqtt.py
+    restart: always
