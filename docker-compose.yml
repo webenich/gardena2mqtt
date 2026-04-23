@@ -1,0 +1,10 @@
+services:
+  gardena2mqtt:
+    build:
+      context: .
+    image: webenich/gardena2mqtt:fix-asyncio-event-loop-python312
+    container_name: gardena2mqtt
+    network_mode: host
+    env_file:
+      - .env
+    restart: always
