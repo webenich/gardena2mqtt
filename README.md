@@ -1,56 +1,53 @@
-![GitHub Release](https://img.shields.io/github/v/release/Domochip/gardena2mqtt)
-![Docker Pulls](https://img.shields.io/docker/pulls/domochip/gardena2mqtt)
-[![Publish Docker image](https://github.com/Domochip/gardena2mqtt/actions/workflows/docker-publish-release.yml/badge.svg)](https://github.com/Domochip/gardena2mqtt/actions/workflows/docker-publish-release.yml)
-[![Publish Docker Dev image](https://github.com/Domochip/gardena2mqtt/actions/workflows/docker-publish-dev.yml/badge.svg)](https://github.com/Domochip/gardena2mqtt/actions/workflows/docker-publish-dev.yml)
 
-# gardena2mqtt
 
-Gateway to control and monitor Gardena Smart System devices via MQTT.
 
----
 
-# About this fork
 
-This fork focuses on a **simple, robust and generic MQTT integration**.
+
+
+gardena2mqtt
+
+Gateway to control and monitor **Gardena Smart System devices via MQTT.
+
+⚠️ Breaking change
+
+This fork removes Home Assistant MQTT discovery support.
+
+👉 The project now focuses on:
+
+simple MQTT publishing
+robustness
+compatibility with any system (not only Home Assistant)
+About this fork
+
+This fork focuses on a simple, robust and generic MQTT integration.
 
 Compared to the original project:
 
-- ❌ Home Assistant MQTT discovery support has been removed  
-- ✅ Plain MQTT topics are published (no abstraction layer)  
-- ✅ Designed for custom integrations (e.g. Domoticz via bridge)  
-- ✅ Improved stability with WebSocket supervisor (Python 3.12 compatible)
+❌ Home Assistant MQTT discovery removed
+✅ Plain MQTT topics (no abstraction layer)
+✅ Designed for custom integrations (e.g. Domoticz via bridge)
+✅ WebSocket supervisor for automatic reconnection
+✅ Python 3.12+ compatibility
 
-This makes the project easier to integrate into **non-Home Assistant environments**.
+👉 Goal: make it reliable and usable in any MQTT-based system
 
----
+Prerequisites
 
-# Prerequisites
+You need one or more Gardena Smart system devices:
+https://www.gardena.com/int/products/smart-system/smart-system
 
-You need one or more Gardena Smart system devices:  
-https://www.gardena.com/int/products/smart-system/smart-system  
+Get API credentials from:
+https://developer.husqvarnagroup.cloud/docs/get-started
 
-Get API credentials from:  
-https://developer.husqvarnagroup.cloud/docs/get-started  
-
----
-
-# How it works
-
-
+How it works
 Gardena Cloud → gardena2mqtt → MQTT → your system (Domoticz, etc.)
-
 
 The application connects to Gardena Cloud and publishes all device updates to MQTT in real time.
 
----
-
-# Installation
-
-## 🔧 Recommended: Docker Compose + `.env`
-
-### 1. Create configuration
-
-```bash
+Installation
+🔧 Recommended: Docker Compose + .env
+1. Create configuration
 cp .env.example .env
 nano .env
 
@@ -73,9 +70,10 @@ MQTT_PASSWORD=
 services:
   gardena2mqtt:
     container_name: gardena2mqtt
-    image: domochip/gardena2mqtt:latest
+    build:
+      context: .
     env_file:
-      - ../.env
+      - .env
     restart: always
     network_mode: host
 3. Start
@@ -85,6 +83,7 @@ docker run -d \
   --name gardena2mqtt \
   --restart=always \
   --env-file .env \
+  --network host \
   domochip/gardena2mqtt:latest
 Configuration
 Environment variables
@@ -108,8 +107,8 @@ Payload:
 
 Value	Meaning
 0	Disconnected
-1	Connected to MQTT only
-2	Connected to MQTT + Gardena Cloud
+1	MQTT only
+2	MQTT + Gardena
 Device state
 
 Topic:
@@ -122,9 +121,9 @@ gardena2mqtt/MySileno
 
 Published when:
 
-Startup
-Reconnection
-Device update
+startup
+reconnection
+device update
 
 Payload: JSON with all device attributes.
 
@@ -137,11 +136,11 @@ gardena2mqtt/<DeviceName>/control
 Result topic:
 
 gardena2mqtt/<DeviceName>/result
-Domoticz integration example
+🔌 Domoticz integration example
 
 This fork publishes plain MQTT data, so integration with Domoticz requires a bridge.
 
-An example is provided:
+👉 Example provided:
 
 examples/domoticz_bridge_example.py
 Architecture
@@ -151,10 +150,7 @@ subscribes to gardena2mqtt/#
 parses JSON payloads
 maps values to Domoticz IDX
 updates devices via Domoticz API
-Configuration
-
-Edit:
-
+Configuration example
 IDX_MAP = {
     "DeviceName": {
         "temperature": 123,
@@ -162,12 +158,12 @@ IDX_MAP = {
     }
 }
 
-You must adapt this mapping to your own Domoticz devices.
+👉 Adapt this mapping to your own Domoticz devices.
 
 Logs
 docker logs gardena2mqtt
 Update
-docker compose pull
+docker compose build --no-cache
 docker compose up -d
 Security
 
@@ -179,8 +175,14 @@ Check logs: docker logs gardena2mqtt
 Verify MQTT connectivity
 Ensure Gardena API credentials are valid
 Check WebSocket status in logs
+Development note
+
+.devcontainer/ is only for development
+Do not use it for deployment.
+
 Thanks
 
 This project is based on:
 
 https://github.com/py-smart-gardena/py-smart-gardena
+https://github.com/Domochip/gardena2mqtt
