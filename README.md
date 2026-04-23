@@ -1,8 +1,7 @@
-
-
-
-
-
+![GitHub Release](https://img.shields.io/github/v/release/Domochip/gardena2mqtt)
+![Docker Pulls](https://img.shields.io/docker/pulls/domochip/gardena2mqtt)
+[![Publish Docker image](https://github.com/Domochip/gardena2mqtt/actions/workflows/docker-publish-release.yml/badge.svg)](https://github.com/Domochip/gardena2mqtt/actions/workflows/docker-publish-release.yml)
+[![Publish Docker Dev image](https://github.com/Domochip/gardena2mqtt/actions/workflows/docker-publish-dev.yml/badge.svg)](https://github.com/Domochip/gardena2mqtt/actions/workflows/docker-publish-dev.yml)
 
 
 gardena2mqtt
